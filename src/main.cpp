@@ -6,25 +6,22 @@
 #include <cfloat>
 #include "Camera.h"
 #include "random"
+#include "Material.h"
 
 using namespace std;
 using namespace Eigen;
 
-Vector3d random_in_unit_sphere() {
-    Vector3d p;
-    do {
-        double a = double(rand() % RAND_MAX) / double(RAND_MAX), b =
-                double(rand() % RAND_MAX) / double(RAND_MAX), c = double(rand() % RAND_MAX) / double(RAND_MAX);
-        p = 2.0 * Vector3d(a, b, c) - Vector3d(1, 1, 1);
-    } while (p.x() * p.x() + p.y() * p.y() + p.z() * p.z() >= 1);
-    return p;
-}
 
-Vector3d color(const Ray &r, Hitable *world) {
+Vector3d color(const Ray &r, Hitable *world, int depth) {
     hit_record rec;
     if (world->hit(r, 0.001, FLT_MAX, rec)) {
-        Vector3d target = rec.p + rec.normal + random_in_unit_sphere();
-        return 0.5 * color(Ray(rec.p, target - rec.p), world);
+        Ray scatter;
+        Vector3d attenuation;
+        if (depth < 50 && rec.material->scatter(r, rec, attenuation, scatter)) {
+            auto c = color(scatter, world, depth + 1);
+            return Vector3d(c.x() * attenuation.x(), c.y() * attenuation.x(), c.z() * attenuation.z());
+        }
+        return Vector3d(0, 0, 0);
     } else {
         Vector3d unit_direction = r.direction().normalized();
         double t = 0.5 * (unit_direction.y() + 1.0);
@@ -39,10 +36,12 @@ int main() {
     int nx = 400, ny = 200, ns = 100;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
     vector<Hitable *> list;
-    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5));
-    list.push_back(new Sphere(Vector3d(0, -100.5, -1), 100));
+    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(Vector3d(0.8, 0.3, 0.3))));
+    list.push_back(new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(Vector3d(0.8, 0.8, 0))));
+    list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
+    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.8, 0.8), 0.5)));
     Camera cam;
-    auto world = new Hitable_list(list, 2);
+    auto world = new Hitable_list(list, list.size());
     for (int j = ny - 1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
             Vector3d c(0, 0, 0);
@@ -51,7 +50,7 @@ int main() {
                 double v = double(j + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(ny);
                 Ray r = cam.get_ray(u, v);
 //                Vector3d p = r.point_at_parameter(2.0);
-                c += color(r, world);
+                c += color(r, world, 0);
             }
             c /= double(ns);
             int ir = int(259.99 * sqrt(c(0)));

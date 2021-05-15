@@ -8,6 +8,7 @@
 using namespace Eigen;
 
 bool Sphere::hit(const Ray &r, double t_min, double t_max, hit_record &rec) const {
+    rec.material = material;
     Vector3d oc = r.origin() - center;
     double a = r.direction().dot(r.direction());
     double b = 2 * r.direction().dot(oc);

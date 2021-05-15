@@ -19,3 +19,5 @@ Eigen::Vector3d Ray::direction() const {
 Eigen::Vector3d Ray::point_at_parameter(double t) const {
     return A + t * B;
 }
+
+Ray::Ray() = default;

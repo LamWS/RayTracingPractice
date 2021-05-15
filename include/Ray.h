@@ -9,6 +9,7 @@
 
 class Ray {
 public:
+    Ray();
     Ray(Eigen::Vector3d a, Eigen::Vector3d b);
 
     Eigen::Vector3d origin() const;
