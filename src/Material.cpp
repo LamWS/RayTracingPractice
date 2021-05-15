@@ -40,3 +40,37 @@ bool Metal::scatter(const Ray &r_in, const hit_record &rec, Vector3d &attenuatio
     attenuation = albedo;
     return scatter.direction().dot(rec.normal) > 0;
 }
+
+bool refract(const Vector3d &v, const Vector3d &n, double ni_over_nt, Vector3d &refracted) {
+    Vector3d uv = v.normalized();
+    double dt = uv.dot(n);
+    double d = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
+    if (d > 0) {
+        refracted = ni_over_nt * (uv - n * dt) - n * sqrt(d);
+        return true;
+    }
+    return false;
+}
+
+bool Dielectric::scatter(const Ray &r_in, const hit_record &rec, Vector3d &attenuation, Ray &scatter) const {
+    Vector3d outward_normal;
+    Vector3d reflected = reflect(r_in.direction(), rec.normal);
+    double ni_over_nt;
+    attenuation = Vector3d(1.0, 1.0, 0);
+    Vector3d refracted;
+    if (r_in.direction().dot(rec.normal) > 0) {
+        // surface upside in
+        outward_normal = -rec.normal;
+        ni_over_nt = ref_idx;
+    } else {
+        outward_normal = rec.normal;
+        ni_over_nt = 1 / ref_idx;
+    }
+    if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
+        scatter = Ray(rec.p, refracted);
+    } else {
+        scatter = Ray(rec.p, reflected);
+        return false;
+    }
+    return true;
+}

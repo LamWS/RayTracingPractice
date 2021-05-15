@@ -39,7 +39,7 @@ int main() {
     list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(Vector3d(0.8, 0.3, 0.3))));
     list.push_back(new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(Vector3d(0.8, 0.8, 0))));
     list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
-    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.8, 0.8), 0.5)));
+    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
     Camera cam;
     auto world = new Hitable_list(list, list.size());
     for (int j = ny - 1; j >= 0; j--) {

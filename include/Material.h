@@ -37,4 +37,13 @@ private:
     double fuzz;
 };
 
+class Dielectric : public Material {
+public:
+    Dielectric(double ri) : ref_idx(ri) {}
+    bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const override;
+
+private:
+    double ref_idx;
+};
+
 #endif //RT_MATERIAL_H
