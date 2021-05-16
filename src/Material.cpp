@@ -41,6 +41,12 @@ bool Metal::scatter(const Ray &r_in, const hit_record &rec, Vector3d &attenuatio
     return scatter.direction().dot(rec.normal) > 0;
 }
 
+double schlick(double cosine, double ref_idx) {
+    double r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow((1 - cosine), 5);
+}
+
 bool refract(const Vector3d &v, const Vector3d &n, double ni_over_nt, Vector3d &refracted) {
     Vector3d uv = v.normalized();
     double dt = uv.dot(n);
@@ -56,21 +62,33 @@ bool Dielectric::scatter(const Ray &r_in, const hit_record &rec, Vector3d &atten
     Vector3d outward_normal;
     Vector3d reflected = reflect(r_in.direction(), rec.normal);
     double ni_over_nt;
-    attenuation = Vector3d(1.0, 1.0, 0);
+    attenuation = Vector3d(1.0, 1.0, 1.0);
     Vector3d refracted;
+
+    // handle reflection using Schlick's approximation
+
+    double reflect_prob;
+    double cosine;
+
     if (r_in.direction().dot(rec.normal) > 0) {
-        // surface upside in
+        // surface downside in
         outward_normal = -rec.normal;
         ni_over_nt = ref_idx;
+        cosine = ref_idx * r_in.direction().dot(rec.normal) / r_in.direction().squaredNorm();
     } else {
         outward_normal = rec.normal;
         ni_over_nt = 1 / ref_idx;
+        cosine = -r_in.direction().dot(rec.normal) / r_in.direction().squaredNorm();
     }
     if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
-        scatter = Ray(rec.p, refracted);
+        reflect_prob = schlick(cosine, ref_idx);
     } else {
+        reflect_prob = 1.0;
+    }
+    if ((rand() % RAND_MAX) / (double) RAND_MAX < reflect_prob) {
         scatter = Ray(rec.p, reflected);
-        return false;
+    } else {
+        scatter = Ray(rec.p, refracted);
     }
     return true;
 }
