@@ -11,10 +11,11 @@ using namespace Eigen;
 Vector3d random_in_unit_sphere() {
     Vector3d p;
     do {
-        double a = double(rand() % RAND_MAX) / double(RAND_MAX), b =
-                double(rand() % RAND_MAX) / double(RAND_MAX), c = double(rand() % RAND_MAX) / double(RAND_MAX);
+        double a = double(rand() % RAND_MAX) / double(RAND_MAX),
+                b = double(rand() % RAND_MAX) / double(RAND_MAX),
+                c = double(rand() % RAND_MAX) / double(RAND_MAX);
         p = 2.0 * Vector3d(a, b, c) - Vector3d(1, 1, 1);
-    } while (p.x() * p.x() + p.y() * p.y() + p.z() * p.z() >= 1);
+    } while (p.norm() >= 1);
     return p;
 }
 
