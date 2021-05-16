@@ -10,8 +10,7 @@
 
 class Camera {
 public:
-    Camera();
-
+    Camera(Eigen::Vector3d lookFrom, Eigen::Vector3d lookAt, Eigen::Vector3d vup, double vfov, double aspect);
     Ray get_ray(double u, double v);
 
 private:

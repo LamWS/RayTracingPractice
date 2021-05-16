@@ -41,7 +41,10 @@ int main() {
     list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
     list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
     list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
-    Camera cam;
+//    double R = cos(M_PI / 4);
+//    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
+//    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
+    Camera cam(Vector3d(-2, 2, 1), Vector3d(0, 0, -1), Vector3d(0, 1, 0), 90, double(nx) / double(ny));
     auto world = new Hitable_list(list, list.size());
     for (int j = ny - 1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
