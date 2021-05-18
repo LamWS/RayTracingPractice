@@ -16,9 +16,12 @@ Vector3d random_in_unit_disk() {
     return p;
 }
 
-Camera::Camera(Eigen::Vector3d lookFrom, Eigen::Vector3d lookAt, Eigen::Vector3d vup, double vfov, double aspect,
-               double aperture, double focus_dist) {
+Camera::Camera(Eigen::Vector3d lookFrom, const Eigen::Vector3d &lookAt, const Eigen::Vector3d &vup, double vfov,
+               double aspect,
+               double aperture, double focus_dist, double t0, double t1) {
     len_radius = aperture / 2;
+    time0 = t0;
+    time1 = t1;
     double theta = vfov * M_PI / 180;
     double half_height = tan(theta / 2);
     double half_width = aspect * half_height;
@@ -34,5 +37,6 @@ Camera::Camera(Eigen::Vector3d lookFrom, Eigen::Vector3d lookAt, Eigen::Vector3d
 Ray Camera::get_ray(double s, double t) {
     Vector3d rd = len_radius * random_in_unit_disk();
     Vector3d offset = u * rd.x() + v * rd.y();
-    return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
+    double time = time0 + ((rand() % RAND_MAX) / (double) RAND_MAX) * (time1 - time0);
+    return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, time);
 }

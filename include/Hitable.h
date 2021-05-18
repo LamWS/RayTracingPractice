@@ -47,4 +47,27 @@ private:
     int list_size;
 };
 
+class MovingSphere : public Hitable {
+public:
+//    MovingSphere() = default;
+
+    MovingSphere(Eigen::Vector3d cen0, Eigen::Vector3d cen1, double t0, double t1, double r, Material *m) :
+            center0(std::move(cen0)),
+            center1(std::move(cen1)),
+            time0(t0),
+            time1(t1),
+            radius(r),
+            material(m) {}
+
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
+    Eigen::Vector3d center(double t) const;
+
+private:
+    Eigen::Vector3d center0, center1;
+    double time0, time1;
+    double radius;
+    Material *material;
+};
+
 #endif //RT_HITABLE_H

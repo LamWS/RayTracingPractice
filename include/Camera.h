@@ -10,15 +10,16 @@
 
 class Camera {
 public:
-    Camera(Eigen::Vector3d lookFrom, Eigen::Vector3d lookAt, Eigen::Vector3d vup, double vfov, double aspect,
-           double aperture, double focus_dist);
+    Camera(Eigen::Vector3d lookFrom, const Eigen::Vector3d &lookAt, const Eigen::Vector3d &vup, double vfov,
+           double aspect,
+           double aperture, double focus_dist, double t0, double t1);
 
     Ray get_ray(double u, double v);
 
 private:
     Eigen::Vector3d origin, lower_left_corner, horizontal, vertical, u, v, w;
     double len_radius;
-
+    double time0, time1;
 };
 
 

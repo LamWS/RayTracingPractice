@@ -16,7 +16,6 @@ bool Sphere::hit(const Ray &r, double t_min, double t_max, hit_record &rec) cons
     auto d = b * b - 4 * a * c;
     if (d > 0) {
         double tmp = (-b - sqrt(d)) / a / 2.0;
-
         if (tmp < t_max && tmp > t_min) {
             rec.t = tmp;
             rec.p = r.point_at_parameter(tmp);
@@ -50,4 +49,34 @@ bool Hitable_list::hit(const Ray &r, double t_min, double t_max, hit_record &rec
         }
     }
     return hit_anything;
+}
+
+bool MovingSphere::hit(const Ray &r, double t_min, double t_max, hit_record &rec) const {
+    rec.material = material;
+    Vector3d oc = r.origin() - center(r.time());
+    double a = r.direction().dot(r.direction());
+    double b = 2 * r.direction().dot(oc);
+    double c = oc.dot(oc) - radius * radius;
+    auto d = b * b - 4 * a * c;
+    if (d > 0) {
+        double tmp = (-b - sqrt(d)) / a / 2.0;
+        if (tmp < t_max && tmp > t_min) {
+            rec.t = tmp;
+            rec.p = r.point_at_parameter(tmp);
+            rec.normal = (rec.p - center(r.time())) / radius;
+            return true;
+        }
+        tmp = (-b + sqrt(d)) / a / 2.0;
+        if (tmp < t_max && tmp > t_min) {
+            rec.t = tmp;
+            rec.p = r.point_at_parameter(tmp);
+            rec.normal = (rec.p - center(r.time())) / radius;
+            return true;
+        }
+    }
+    return false;
+}
+
+Eigen::Vector3d MovingSphere::center(double t) const {
+    return center0 + ((t - time0) / (time1 - time0)) * (center1 - center0);
 }

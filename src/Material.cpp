@@ -22,7 +22,7 @@ Vector3d random_in_unit_sphere() {
 
 bool Lambertian::scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const {
     Eigen::Vector3d target = rec.p + rec.normal + random_in_unit_sphere();
-    scatter = Ray(rec.p, target - rec.p);
+    scatter = Ray(rec.p, target - rec.p, r_in.time());
     attenuation = albedo;
     return true;
 }
@@ -37,7 +37,7 @@ Vector3d reflect(const Vector3d &v, const Vector3d &n) {
 
 bool Metal::scatter(const Ray &r_in, const hit_record &rec, Vector3d &attenuation, Ray &scatter) const {
     Vector3d reflected = reflect(r_in.direction(), rec.normal).normalized();
-    scatter = Ray(rec.p, reflected + fuzz * random_in_unit_sphere());
+    scatter = Ray(rec.p, reflected + fuzz * random_in_unit_sphere(), r_in.time());
     attenuation = albedo;
     return scatter.direction().dot(rec.normal) > 0;
 }
@@ -87,9 +87,9 @@ bool Dielectric::scatter(const Ray &r_in, const hit_record &rec, Vector3d &atten
         reflect_prob = 1.0;
     }
     if ((rand() % RAND_MAX) / (double) RAND_MAX < reflect_prob) {
-        scatter = Ray(rec.p, reflected);
+        scatter = Ray(rec.p, reflected, r_in.time());
     } else {
-        scatter = Ray(rec.p, refracted);
+        scatter = Ray(rec.p, refracted, r_in.time());
     }
     return true;
 }
