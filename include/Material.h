@@ -15,11 +15,12 @@
 class Material {
 public:
     virtual bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const = 0;
+    virtual Eigen::Vector3d emitted(double u, double v, const Eigen::Vector3d &p) const;
 };
 
 class Lambertian : public Material {
 public:
-    explicit Lambertian(Texture* a);
+    explicit Lambertian(Texture *a);
 
     bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const override;
 
@@ -46,6 +47,18 @@ public:
 
 private:
     double ref_idx;
+};
+
+class DiffuseLight : public Material {
+public:
+    DiffuseLight(Texture *a) : emit(a) {}
+
+    bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const override;
+
+    Eigen::Vector3d emitted(double u, double v, const Eigen::Vector3d &p) const override;
+
+private:
+    Texture *emit;
 };
 
 #endif //RT_MATERIAL_H

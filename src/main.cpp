@@ -10,6 +10,10 @@
 #include "omp.h"
 #include "Texture.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "stb_image.h"
+
 using namespace std;
 using namespace Eigen;
 
@@ -19,11 +23,12 @@ Vector3d color(const Ray &r, Hitable *world, int depth) {
     if (world->hit(r, 0.001, FLT_MAX, rec)) {
         Ray scatter;
         Vector3d attenuation;
+        auto emitted = rec.material->emitted(rec.u, rec.v, rec.p);
         if (depth < 50 && rec.material->scatter(r, rec, attenuation, scatter)) {
             auto c = color(scatter, world, depth + 1);
-            return Vector3d(c.x() * attenuation.x(), c.y() * attenuation.x(), c.z() * attenuation.z());
+            return emitted + Vector3d(c.x() * attenuation.x(), c.y() * attenuation.x(), c.z() * attenuation.z());
         }
-        return Vector3d(0, 0, 0);
+        return emitted;
     } else {
         Vector3d unit_direction = r.direction().normalized();
         double t = 0.5 * (unit_direction.y() + 1.0);
@@ -105,7 +110,7 @@ int main() {
 //    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
 //    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
     list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(new NoiseTexture(1))));
-    list.push_back(new Sphere(Vector3d(0, 2, 0), 2, new Lambertian(new NoiseTexture(1))));
+//    list.push_back(new Sphere(Vector3d(0, 2, 0), 2, new Lambertian(new NoiseTexture(1))));
     Vector3d lookFrom(13, 2, 3), lookAt(0, 0, 0);
     double dist_to_focus = 10;
     double aperture = 0;

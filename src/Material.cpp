@@ -24,7 +24,7 @@ Vector3d random_in_unit_sphere() {
 bool Lambertian::scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const {
     Eigen::Vector3d target = rec.p + rec.normal + random_in_unit_sphere();
     scatter = Ray(rec.p, target - rec.p, r_in.time());
-    attenuation = albedo->value(0, 0, rec.p);
+    attenuation = albedo->value(rec.u, rec.v, rec.p);
     return true;
 }
 
@@ -94,4 +94,16 @@ bool Dielectric::scatter(const Ray &r_in, const hit_record &rec, Vector3d &atten
         scatter = Ray(rec.p, refracted, r_in.time());
     }
     return true;
+}
+
+bool DiffuseLight::scatter(const Ray &r_in, const hit_record &rec, Vector3d &attenuation, Ray &scatter) const {
+    return false;
+}
+
+Eigen::Vector3d DiffuseLight::emitted(double u, double v, const Vector3d &p) const {
+    return emit->value(u, v, p);
+}
+
+Eigen::Vector3d Material::emitted(double u, double v, const Vector3d &p) const {
+    return Vector3d(0, 0, 0);
 }

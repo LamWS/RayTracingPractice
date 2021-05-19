@@ -17,9 +17,17 @@ Aabb surrounding_box(const Aabb &box0, const Aabb &box1) {
     return Aabb(small, large);
 }
 
+void get_sphere_uv(const Vector3d &p, double &u, double &v) {
+    double phi = atan2(p.z(), p.x());
+    double theta = asin(p.y());
+    u = 1 - (phi + M_PI) / (2 * M_PI);
+    v = (theta + M_PI / 2) / M_PI;
+}
+
 bool Sphere::hit(const Ray &r, double t_min, double t_max, hit_record &rec) const {
     rec.material = material;
     Vector3d oc = r.origin() - center;
+    get_sphere_uv((rec.p - center) / radius, rec.u, rec.v);
     double a = r.direction().dot(r.direction());
     double b = 2 * r.direction().dot(oc);
     double c = oc.dot(oc) - radius * radius;

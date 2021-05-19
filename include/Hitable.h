@@ -18,6 +18,7 @@ class Material;
 struct hit_record {
     double t;
     Eigen::Vector3d p, normal;
+    double u, v;
     Material *material;
 };
 
