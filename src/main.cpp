@@ -8,6 +8,7 @@
 #include "random"
 #include "Material.h"
 #include "omp.h"
+#include "Texture.h"
 
 using namespace std;
 using namespace Eigen;
@@ -37,7 +38,13 @@ double ran() {
 Hitable *random_scene() {
     int n = 50000;
     vector<Hitable *> list;
-    list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(Vector3d(0.5, 0.5, 0.5))));
+    list.push_back(
+            new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(
+                    new CheckerTexture(new ConstantTexture(Vector3d(0.2, 0.3, 0.1)),
+                                       new ConstantTexture(Vector3d(0.9, 0.9, 0.9))
+                    ))
+            )
+    );
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
             Vector3d center(a + 0.9 * ran(), 0.2,
@@ -59,8 +66,11 @@ Hitable *random_scene() {
                     cout << "norm" << endl;
                     cout << (center1 - center).norm() << endl;
                     list.push_back(new MovingSphere(center, center1, 0, 1, 0.2,
-                                                    new Lambertian(
-                                                            Vector3d(ran() * ran(), ran() * ran(), ran() * ran()))));
+                                                    new Lambertian(new ConstantTexture(
+                                                            Vector3d(ran() * ran(),
+                                                                     ran() * ran(),
+                                                                     ran() * ran())
+                                                    ))));
                 } else if (choose_mat < 0.95) {
                     list.push_back(new Sphere(center, 0.2,
                                               new Metal(
@@ -73,7 +83,7 @@ Hitable *random_scene() {
         }
     }
     list.push_back(new Sphere(Vector3d(0, 1, 0), 1.0, new Dielectric(1.5)));
-    list.push_back(new Sphere(Vector3d(-4, 1, 0), 1.0, new Lambertian(Vector3d(0.4, 0.2, 0.1))));
+    list.push_back(new Sphere(Vector3d(-4, 1, 0), 1.0, new Lambertian(new ConstantTexture(Vector3d(0.4, 0.2, 0.1)))));
     list.push_back(new Sphere(Vector3d(4, 1, 0), 1.0, new Metal(Vector3d(0.7, 0.6, 0.5), 0)));
     return new Hitable_list(list, list.size());
 }
@@ -85,8 +95,9 @@ int main() {
     int nx = 200, ny = 100, ns = 100;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
     vector<Hitable *> list;
-    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(Vector3d(0.1, 0.2, 0.5))));
-    list.push_back(new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(Vector3d(0.8, 0.8, 0))));
+    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
+    list.push_back(
+            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
     list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
     list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
     list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
@@ -94,11 +105,11 @@ int main() {
 //    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
 //    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
     Vector3d lookFrom(13, 2, 3), lookAt(0, 0, 0);
-    double dist_to_focus = (lookFrom - lookAt).norm();
+    double dist_to_focus = 10;
     double aperture = 0;
     Camera cam(lookFrom, lookAt, Vector3d(0, 1, 0), 20, double(nx) / double(ny), aperture, dist_to_focus, 0, 1);
-//    auto world = random_scene();
-    auto world = new Hitable_list(list, list.size());
+    auto world = random_scene();
+//    auto world = new Hitable_list(list, list.size());
     vector<Vector3d> result;
     result.resize(ny * nx);
 //#pragma omp parallel for default(none) shared(ny, nx, ns, world, cam, result)

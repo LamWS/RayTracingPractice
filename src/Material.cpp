@@ -24,11 +24,11 @@ Vector3d random_in_unit_sphere() {
 bool Lambertian::scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const {
     Eigen::Vector3d target = rec.p + rec.normal + random_in_unit_sphere();
     scatter = Ray(rec.p, target - rec.p, r_in.time());
-    attenuation = albedo;
+    attenuation = albedo->value(0, 0, rec.p);
     return true;
 }
 
-Lambertian::Lambertian(Eigen::Vector3d a) : albedo(std::move(a)) {
+Lambertian::Lambertian(Texture *a) : albedo(a) {
 
 }
 

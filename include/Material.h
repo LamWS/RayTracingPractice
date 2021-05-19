@@ -10,6 +10,7 @@
 #include "Ray.h"
 #include "Hitable.h"
 #include "Eigen/Dense"
+#include "Texture.h"
 
 class Material {
 public:
@@ -18,12 +19,12 @@ public:
 
 class Lambertian : public Material {
 public:
-    explicit Lambertian(Eigen::Vector3d a);
+    explicit Lambertian(Texture* a);
 
     bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const override;
 
 private:
-    Eigen::Vector3d albedo;
+    Texture *albedo;
 };
 
 class Metal : public Material {
@@ -40,6 +41,7 @@ private:
 class Dielectric : public Material {
 public:
     explicit Dielectric(double ri) : ref_idx(ri) {}
+
     bool scatter(const Ray &r_in, const hit_record &rec, Eigen::Vector3d &attenuation, Ray &scatter) const override;
 
 private:
