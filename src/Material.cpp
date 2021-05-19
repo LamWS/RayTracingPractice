@@ -14,7 +14,8 @@ Vector3d random_in_unit_sphere() {
         double a = double(rand() % RAND_MAX) / double(RAND_MAX),
                 b = double(rand() % RAND_MAX) / double(RAND_MAX),
                 c = double(rand() % RAND_MAX) / double(RAND_MAX);
-        p = 2.0 * Vector3d(a, b, c) - Vector3d(1, 1, 1);
+        Vector3d r(a, b, c), one(1, 1, 1);
+        p = 2.0 * r - one;
     } while (p.norm() >= 1);
     return p;
 }
@@ -64,6 +65,7 @@ bool Dielectric::scatter(const Ray &r_in, const hit_record &rec, Vector3d &atten
     Vector3d reflected = reflect(r_in.direction(), rec.normal);
     double ni_over_nt;
     attenuation = Vector3d(1.0, 1.0, 1.0);
+
     Vector3d refracted;
 
     // handle reflection using Schlick's approximation

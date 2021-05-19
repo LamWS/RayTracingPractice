@@ -97,13 +97,15 @@ int main() {
     double dist_to_focus = (lookFrom - lookAt).norm();
     double aperture = 0;
     Camera cam(lookFrom, lookAt, Vector3d(0, 1, 0), 20, double(nx) / double(ny), aperture, dist_to_focus, 0, 1);
-    auto world = random_scene();
-//    auto world = new Hitable_list(list, list.size());
+//    auto world = random_scene();
+    auto world = new Hitable_list(list, list.size());
     vector<Vector3d> result;
     result.resize(ny * nx);
 //#pragma omp parallel for default(none) shared(ny, nx, ns, world, cam, result)
     for (int j = ny - 1; j >= 0; j--) {
+        cout << j << endl;
         for (int i = 0; i < nx; i++) {
+//            cout << ny - j << ":" << i << endl;
             Vector3d c(0, 0, 0);
             for (int s = 0; s < ns; s++) {
                 double u = double(i + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(nx);
