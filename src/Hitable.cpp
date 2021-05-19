@@ -159,8 +159,9 @@ BVHNode::BVHNode(std::vector<Hitable *> list, double t0, double t1) {
     } else if (list.size() == 2) {
         left = list[0];
         right = list[1];
-    }else{
-        left = new BVH
+    } else {
+        left = new BVHNode(std::vector<Hitable *>(list.begin(), list.begin() + list.size() / 2), t0, t1);
+        right = new BVHNode(std::vector<Hitable *>(list.begin() + list.size() / 2, list.end()), t0, t1);
     }
     Aabb box_left, box_right;
     if (!left->bounding_box(t0, t1, box_left) || !right->bounding_box(t0, t1, box_right)) {
