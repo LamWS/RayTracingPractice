@@ -16,3 +16,7 @@ Eigen::Vector3d CheckerTexture::value(double u, double v, const Eigen::Vector3d 
         return even->value(u, v, p);
     }
 }
+
+Eigen::Vector3d NoiseTexture::value(double u, double v, const Eigen::Vector3d &p) const {
+    return Eigen::Vector3d(1, 1, 1) * noise.noise(scale * p);
+}

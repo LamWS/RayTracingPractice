@@ -20,7 +20,7 @@ find_package(OpenGL REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 include_directories(include)
-add_executable(RT src/main.cpp src/Ray.cpp include/Ray.h src/Hitable.cpp include/Hitable.h src/Camera.cpp include/Camera.h src/Material.cpp include/Material.h src/Aabb.cpp include/Aabb.h src/Texture.cpp include/Texture.h)
+add_executable(RT src/main.cpp src/Ray.cpp include/Ray.h src/Hitable.cpp include/Hitable.h src/Camera.cpp include/Camera.h src/Material.cpp include/Material.h src/Aabb.cpp include/Aabb.h src/Texture.cpp include/Texture.h src/Perlin.cpp include/Perlin.h)
 target_link_libraries(RT glfw)
 target_link_libraries(RT OpenGL::GL)
 target_link_libraries(RT Eigen3::Eigen)

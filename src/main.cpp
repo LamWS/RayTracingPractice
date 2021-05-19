@@ -95,21 +95,23 @@ int main() {
     int nx = 200, ny = 100, ns = 100;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
     vector<Hitable *> list;
-    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
-    list.push_back(
-            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
-    list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
-    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
-    list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
+//    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
+//    list.push_back(
+//            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
+//    list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
+//    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
+//    list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
 //    double R = cos(M_PI / 4);
 //    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
 //    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
+    list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(new NoiseTexture(1))));
+    list.push_back(new Sphere(Vector3d(0, 2, 0), 2, new Lambertian(new NoiseTexture(1))));
     Vector3d lookFrom(13, 2, 3), lookAt(0, 0, 0);
     double dist_to_focus = 10;
     double aperture = 0;
     Camera cam(lookFrom, lookAt, Vector3d(0, 1, 0), 20, double(nx) / double(ny), aperture, dist_to_focus, 0, 1);
-    auto world = random_scene();
-//    auto world = new Hitable_list(list, list.size());
+//    auto world = random_scene();
+    auto world = new Hitable_list(list, list.size());
     vector<Vector3d> result;
     result.resize(ny * nx);
 //#pragma omp parallel for default(none) shared(ny, nx, ns, world, cam, result)

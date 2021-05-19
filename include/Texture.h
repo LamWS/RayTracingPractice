@@ -7,6 +7,7 @@
 
 #include <Eigen/Dense>
 #include <utility>
+#include "Perlin.h"
 
 class Texture {
 public:
@@ -36,7 +37,19 @@ public:
 private:
     Texture *even;
     Texture *odd;
+};
 
+class NoiseTexture : public Texture {
+public:
+    NoiseTexture() = default;
+
+    explicit NoiseTexture(double sc) : scale(sc) {}
+
+    Eigen::Vector3d value(double u, double v, const Eigen::Vector3d &p) const override;
+
+private:
+    Perlin noise;
+    double scale;
 };
 
 #endif //RT_TEXTURE_H
