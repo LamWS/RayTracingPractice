@@ -29,11 +29,8 @@ Vector3d color(const Ray &r, Hitable *world, int depth) {
             return emitted + Vector3d(c.x() * attenuation.x(), c.y() * attenuation.x(), c.z() * attenuation.z());
         }
         return emitted;
-    } else {
-        Vector3d unit_direction = r.direction().normalized();
-        double t = 0.5 * (unit_direction.y() + 1.0);
-        return (1 - t) * Vector3d(1.0, 1.0, 1.0) + t * Vector3d(0.5, 0.7, 1.0);
     }
+    return Vector3d(0, 0, 0);
 }
 
 double ran() {
@@ -97,19 +94,21 @@ int main() {
     ofstream outputFile;
     outputFile.open("output.ppm", ios::out);
 
-    int nx = 200, ny = 100, ns = 100;
+    int nx = 400, ny = 200, ns = 100;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
     vector<Hitable *> list;
-//    list.push_back(new Sphere(Vector3d(0, 0, -1), 0.5, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
-//    list.push_back(
-//            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
-//    list.push_back(new Sphere(Vector3d(1, 0, -1), 0.5, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
-//    list.push_back(new Sphere(Vector3d(-1, 0, -1), 0.5, new Dielectric(1.5)));
+    list.push_back(new Sphere(Vector3d(0, 0, -1), 1, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
+    list.push_back(
+            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
+    list.push_back(new Sphere(Vector3d(1, 0, -1), 1, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
+    list.push_back(new Sphere(Vector3d(-1, 0, -1), 1, new Dielectric(1.5)));
+    list.push_back(new Sphere(Vector3d(0, 7, 0), 2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
+    list.push_back(new XYRect(3, 5, 1, 3, -2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
 //    list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
 //    double R = cos(M_PI / 4);
 //    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
 //    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
-    list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(new NoiseTexture(1))));
+//    list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(new NoiseTexture(1))));
 //    list.push_back(new Sphere(Vector3d(0, 2, 0), 2, new Lambertian(new NoiseTexture(1))));
     Vector3d lookFrom(13, 2, 3), lookAt(0, 0, 0);
     double dist_to_focus = 10;

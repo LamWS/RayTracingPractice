@@ -97,5 +97,49 @@ private:
     Aabb box;
 };
 
+class XYRect : public Hitable {
+public:
+//    XYRect();
+    XYRect(double x0, double x1, double y0, double y1, double k, Material *m) : x0(x0), x1(x1), y0(y0), y1(y1), k(k),
+                                                                                material(m) {}
+
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
+    bool bounding_box(double t0, double t1, Aabb &box) const override;
+
+private:
+    double x0, x1, y0, y1, k;
+    Material *material;
+};
+
+class XZRect : public Hitable {
+public:
+//    XYRect();
+    XZRect(double x0, double x1, double z0, double z1, double k, Material *m) : x0(x0), x1(x1), z0(z0), z1(z1), k(k),
+                                                                                material(m) {}
+
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
+    bool bounding_box(double t0, double t1, Aabb &box) const override;
+
+private:
+    double x0, x1, z0, z1, k;
+    Material *material;
+};
+
+class YZRect : public Hitable {
+public:
+//    XYRect();
+    YZRect(double x0, double x1, double z0, double z1, double k, Material *m) : y0(x0), y1(x1), z0(z0), z1(z1), k(k),
+                                                                                material(m) {}
+
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
+    bool bounding_box(double t0, double t1, Aabb &box) const override;
+
+private:
+    double y0, y1, z0, z1, k;
+    Material *material;
+};
 
 #endif //RT_HITABLE_H
