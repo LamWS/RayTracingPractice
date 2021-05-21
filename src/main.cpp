@@ -26,7 +26,7 @@ Vector3d color(const Ray &r, Hitable *world, int depth) {
         auto emitted = rec.material->emitted(rec.u, rec.v, rec.p);
         if (depth < 50 && rec.material->scatter(r, rec, attenuation, scatter)) {
             auto c = color(scatter, world, depth + 1);
-            return emitted + Vector3d(c.x() * attenuation.x(), c.y() * attenuation.x(), c.z() * attenuation.z());
+            return emitted + Vector3d(c.x() * attenuation.x(), c.y() * attenuation.y(), c.z() * attenuation.z());
         }
         return emitted;
     }
@@ -90,32 +90,47 @@ Hitable *random_scene() {
     return new Hitable_list(list, list.size());
 }
 
+Hitable *cornell_box() {
+    vector<Hitable *> list;
+    auto red = new Lambertian(new ConstantTexture(Vector3d(0.65, 0.05, 0.05)));
+    auto white = new Lambertian(new ConstantTexture(Vector3d(0.73, 0.73, 0.73)));
+    auto green = new Lambertian(new ConstantTexture(Vector3d(0.12, 0.45, 0.15)));
+    auto light = new DiffuseLight(new ConstantTexture(Vector3d(15, 15, 15)));
+    list.push_back(new FlipNormal(new YZRect(0, 555, 0, 555, 555, green)));
+    list.push_back(new YZRect(0, 555, 0, 555, 0, red));
+    list.push_back(new XZRect(213, 343, 227, 332, 554, light));
+    list.push_back(new FlipNormal(new XZRect(0, 555, 0, 555, 555, white)));
+    list.push_back(new XZRect(0, 555, 0, 555, 0, white));
+    list.push_back(new FlipNormal(new XYRect(0, 555, 0, 555, 555, white)));
+    return new Hitable_list(list, list.size());
+}
+
 int main() {
     ofstream outputFile;
     outputFile.open("output.ppm", ios::out);
 
     int nx = 400, ny = 200, ns = 100;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
-    vector<Hitable *> list;
-    list.push_back(new Sphere(Vector3d(0, 0, -1), 1, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
-    list.push_back(
-            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
-    list.push_back(new Sphere(Vector3d(1, 0, -1), 1, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
-    list.push_back(new Sphere(Vector3d(-1, 0, -1), 1, new Dielectric(1.5)));
-    list.push_back(new Sphere(Vector3d(0, 7, 0), 2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
-    list.push_back(new XYRect(3, 5, 1, 3, -2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
+//    vector<Hitable *> list;
+//    list.push_back(new Sphere(Vector3d(0, 0, -1), 1, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
+//    list.push_back(
+//            new Sphere(Vector3d(0, -100.5, -1), 100, new Lambertian(new ConstantTexture(Vector3d(0.8, 0.8, 0)))));
+//    list.push_back(new Sphere(Vector3d(1, 0, -1), 1, new Metal(Vector3d(0.8, 0.6, 0.2), 0.3)));
+//    list.push_back(new Sphere(Vector3d(-1, 0, -1), 1, new Dielectric(1.5)));
+//    list.push_back(new Sphere(Vector3d(0, 7, 0), 2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
+//    list.push_back(new XYRect(3, 5, 1, 3, -2, new DiffuseLight(new ConstantTexture(Vector3d(4, 4, 4)))));
 //    list.push_back(new Sphere(Vector3d(-1, 0, -1), -0.45, new Dielectric(1.5)));
 //    double R = cos(M_PI / 4);
 //    list.push_back(new Sphere(Vector3d(-R, 0, -1), R, new Lambertian(Vector3d(0, 0, 1))));
 //    list.push_back(new Sphere(Vector3d(R, 0, -1), R, new Lambertian(Vector3d(1, 0, 0))));
 //    list.push_back(new Sphere(Vector3d(0, -1000, 0), 1000, new Lambertian(new NoiseTexture(1))));
 //    list.push_back(new Sphere(Vector3d(0, 2, 0), 2, new Lambertian(new NoiseTexture(1))));
-    Vector3d lookFrom(13, 2, 3), lookAt(0, 0, 0);
+    Vector3d lookFrom(278, 278, -800), lookAt(278, 278, 0);
     double dist_to_focus = 10;
     double aperture = 0;
-    Camera cam(lookFrom, lookAt, Vector3d(0, 1, 0), 20, double(nx) / double(ny), aperture, dist_to_focus, 0, 1);
-//    auto world = random_scene();
-    auto world = new Hitable_list(list, list.size());
+    Camera cam(lookFrom, lookAt, Vector3d(0, 1, 0), 40, double(nx) / double(ny), aperture, dist_to_focus, 0, 1);
+    auto world = cornell_box();
+//    auto world = new Hitable_list(list, list.size());
     vector<Vector3d> result;
     result.resize(ny * nx);
 //#pragma omp parallel for default(none) shared(ny, nx, ns, world, cam, result)

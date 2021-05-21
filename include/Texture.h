@@ -9,6 +9,7 @@
 #include <utility>
 #include "Perlin.h"
 #include <algorithm>
+
 class Texture {
 public:
     virtual Eigen::Vector3d value(double u, double v, const Eigen::Vector3d &p) const = 0;
@@ -55,7 +56,9 @@ private:
 class ImageTexture : public Texture {
 public:
     ImageTexture(unsigned char *pixels, int A, int B) : data(pixels), nx(A), ny(B) {}
+
     Eigen::Vector3d value(double u, double v, const Eigen::Vector3d &p) const override;
+
 private:
     unsigned char *data;
     int nx, ny;

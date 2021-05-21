@@ -265,3 +265,15 @@ bool YZRect::bounding_box(double t0, double t1, Aabb &box) const {
     box = Aabb(Vector3d(k - 0.001, y0, z0), Vector3d(k + 0.001, y1, z1));
     return true;
 }
+
+bool FlipNormal::hit(const Ray &r, double t_min, double t_max, hit_record &rec) const {
+    if (hitable->hit(r, t_min, t_max, rec)) {
+        rec.normal = -rec.normal;
+        return true;
+    }
+    return false;
+}
+
+bool FlipNormal::bounding_box(double t0, double t1, Aabb &box) const {
+    return hitable->bounding_box(t0, t1, box);
+}

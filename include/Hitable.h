@@ -142,4 +142,12 @@ private:
     Material *material;
 };
 
+class FlipNormal : public Hitable {
+public:
+    explicit FlipNormal(Hitable *h) : hitable(h) {}
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+    bool bounding_box(double t0, double t1, Aabb &box) const override;
+    Hitable *hitable;
+};
+
 #endif //RT_HITABLE_H
