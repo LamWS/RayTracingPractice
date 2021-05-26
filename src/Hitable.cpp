@@ -4,6 +4,8 @@
 
 #include "Hitable.h"
 
+#include <utility>
+
 
 using namespace Eigen;
 
@@ -276,4 +278,24 @@ bool FlipNormal::hit(const Ray &r, double t_min, double t_max, hit_record &rec) 
 
 bool FlipNormal::bounding_box(double t0, double t1, Aabb &box) const {
     return hitable->bounding_box(t0, t1, box);
+}
+
+Box::Box(Vector3d p0, Vector3d p1, Material *m) : p_min(std::move(p0)), p_max(std::move(p1)) {
+    std::vector<Hitable *> v;
+    v.push_back(new XYRect(p0.x(), p1.x(), p0.y(), p1.y(), p1.z(), m));
+    v.push_back(new FlipNormal(new XYRect(p0.x(), p1.x(), p0.y(), p1.y(), p0.z(), m)));
+    v.push_back(new XZRect(p0.x(), p1.x(), p0.z(), p1.z(), p1.y(), m));
+    v.push_back(new FlipNormal(new XZRect(p0.x(), p1.x(), p0.z(), p1.z(), p0.y(), m)));
+    v.push_back(new YZRect(p0.y(), p1.y(), p0.y(), p1.y(), p1.x(), m));
+    v.push_back(new FlipNormal(new YZRect(p0.y(), p1.y(), p0.y(), p1.y(), p0.x(), m)));
+    list = new Hitable_list(v, v.size());
+}
+
+bool Box::hit(const Ray &r, double t_min, double t_max, hit_record &rec) const {
+    return list->hit(r, t_min, t_max, rec);
+}
+
+bool Box::bounding_box(double t0, double t1, Aabb &box) const {
+    box = Aabb(p_min, p_max);
+    return true;
 }

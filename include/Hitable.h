@@ -145,9 +145,25 @@ private:
 class FlipNormal : public Hitable {
 public:
     explicit FlipNormal(Hitable *h) : hitable(h) {}
+
     bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
     bool bounding_box(double t0, double t1, Aabb &box) const override;
+
     Hitable *hitable;
+};
+
+class Box : public Hitable {
+public:
+    Box(Eigen::Vector3d p0, Eigen::Vector3d p1, Material *m);
+
+    bool hit(const Ray &r, double t_min, double t_max, hit_record &rec) const override;
+
+    bool bounding_box(double t0, double t1, Aabb &box) const override;
+
+private:
+    Eigen::Vector3d p_min, p_max;
+    Hitable *list;
 };
 
 #endif //RT_HITABLE_H

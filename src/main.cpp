@@ -102,6 +102,8 @@ Hitable *cornell_box() {
     list.push_back(new FlipNormal(new XZRect(0, 555, 0, 555, 555, white)));
     list.push_back(new XZRect(0, 555, 0, 555, 0, white));
     list.push_back(new FlipNormal(new XYRect(0, 555, 0, 555, 555, white)));
+    list.push_back(new Box(Vector3d(130, 0, 65), Vector3d(295, 165, 230), white));
+    list.push_back(new Box(Vector3d(265, 0, 295), Vector3d(430, 330, 460), white));
     return new Hitable_list(list, list.size());
 }
 
@@ -109,7 +111,7 @@ int main() {
     ofstream outputFile;
     outputFile.open("output.ppm", ios::out);
 
-    int nx = 400, ny = 200, ns = 100;
+    int nx = 256, ny = 256, ns = 200;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
 //    vector<Hitable *> list;
 //    list.push_back(new Sphere(Vector3d(0, 0, -1), 1, new Lambertian(new ConstantTexture(Vector3d(0.1, 0.2, 0.5)))));
