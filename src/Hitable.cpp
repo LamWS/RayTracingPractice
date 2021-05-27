@@ -286,8 +286,8 @@ Box::Box(Vector3d p0, Vector3d p1, Material *m) : p_min(std::move(p0)), p_max(st
     v.push_back(new FlipNormal(new XYRect(p0.x(), p1.x(), p0.y(), p1.y(), p0.z(), m)));
     v.push_back(new XZRect(p0.x(), p1.x(), p0.z(), p1.z(), p1.y(), m));
     v.push_back(new FlipNormal(new XZRect(p0.x(), p1.x(), p0.z(), p1.z(), p0.y(), m)));
-    v.push_back(new YZRect(p0.y(), p1.y(), p0.y(), p1.y(), p1.x(), m));
-    v.push_back(new FlipNormal(new YZRect(p0.y(), p1.y(), p0.y(), p1.y(), p0.x(), m)));
+    v.push_back(new YZRect(p0.y(), p1.y(), p0.z(), p1.z(), p1.x(), m));
+    v.push_back(new FlipNormal(new YZRect(p0.y(), p1.y(), p0.z(), p1.z(), p0.x(), m)));
     list = new Hitable_list(v, v.size());
 }
 

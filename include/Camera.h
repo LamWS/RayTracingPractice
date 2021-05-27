@@ -16,6 +16,10 @@ public:
 
     Ray get_ray(double u, double v);
 
+    Ray get_ray(Eigen::Vector3d look_at);
+
+    Eigen::Vector3d screen_pos(const Eigen::Vector3d& look_at);
+
 private:
     Eigen::Vector3d origin, lower_left_corner, horizontal, vertical, u, v, w;
     double len_radius;

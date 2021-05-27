@@ -40,3 +40,18 @@ Ray Camera::get_ray(double s, double t) {
     double time = time0 + ((rand() % RAND_MAX) / (double) RAND_MAX) * (time1 - time0);
     return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, time);
 }
+
+Ray Camera::get_ray(Eigen::Vector3d look_at) {
+    return Ray(origin, look_at - origin, 0);
+}
+
+Eigen::Vector3d Camera::screen_pos(const Eigen::Vector3d &look_at) {
+    Matrix<double, 3, 1> b = (origin - lower_left_corner).transpose();
+    Matrix<double, 3, 3> A;
+    A.col(0) = (origin - look_at).transpose();
+    A.col(1) = horizontal.transpose();
+    A.col(2) = vertical.transpose();
+    auto res = (A.inverse() * b).transpose();
+    return res;
+}
+
