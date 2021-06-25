@@ -95,15 +95,16 @@ Hitable *cornell_box(double eps = 0) {
     list.push_back(new FlipNormal(new XYRect(0, 555, 0, 555, 555, white)));
 //    list.push_back(new Box(Vector3d(130, 0, 65), Vector3d(295, 165, 230), white));
 //    list.push_back(new Box(Vector3d(265 + eps, 0, 150), Vector3d(430 + eps, 200, 380), white));
-    list.push_back(new Box(Vector3d(130, 0, 65), Vector3d(295, 165, 230), white));
-    list.push_back(new Box(Vector3d(265, 0, 295), Vector3d(430, 330, 460), white));
+//    list.push_back(new Box(Vector3d(130, 0, 65), Vector3d(295, 165, 230), white));
+//    list.push_back(new Box(Vector3d(265, 0, 295), Vector3d(430, 330, 460), white));
+    list.push_back(new Sphere(Vector3d(200, 200, 200), 100.0, new Metal(Vector3d(0.7, 0.6, 0.5), 0)));
     return new Hitable_list(list, list.size());
 }
 
 int main() {
     ofstream outputFile;
     outputFile.open("output.ppm", ios::out);
-    int nx = 256, ny = 256, ns = 1600;
+    int nx = 256, ny = 256, ns = 6400;
     outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
     Vector3d lookFrom(278, 278, -800), lookAt(278, 278, 0);
     Vector3d x_eps(0.01, 0, 0);
@@ -115,167 +116,167 @@ int main() {
     auto world = cornell_box();
     vector<Vector3d> result;
     result.resize(ny * nx);
-//    for (int j = ny - 1; j >= 0; j--) {
-//        cout << j << endl;
-//        for (int i = 0; i < nx; i++) {
-//            Vector3d c_in(0, 0, 0), c_out(0, 0, 0);
-//            for (int s = 0; s < ns; s++) {
-//                double u = double(i + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(nx);
-//                double v = double(j + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(ny);
-//                Ray r = cam.get_ray(u, v);
-//                c_in += color(r, world, 0);
-//            }
+    for (int j = ny - 1; j >= 0; j--) {
+        cout << j << endl;
+        for (int i = 0; i < nx; i++) {
+            Vector3d c(0, 0, 0);
+            for (int s = 0; s < ns; s++) {
+                double u = double(i + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(nx);
+                double v = double(j + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(ny);
+                Ray r = cam.get_ray(u, v);
+                c += color(r, world, 0);
+            }
 //            for (int s = 0; s < ns; s++) {
 //                double u = double(i + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(nx);
 //                double v = double(j + double(rand() % RAND_MAX) / double(RAND_MAX)) / double(ny);
 //                Ray r = cam1.get_ray(u, v);
 //                c_out += color(r, world, 0);
 //            }
-//            c_in /= double(ns);
+            c /= double(ns);
 //            c_out /= double(ns);
 //            auto c = (c_out - c_in) / x_eps.x();
-//            int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
-//            int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
-//            int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
-//            outputFile << ir << " " << ig << " " << ib << endl;
-//        }
-//    }
-    outputFile.close();
-    vector<Edge> edges;
-    edges.emplace_back(Vector3d(130, 0, 230), Vector3d(295, 0, 230));
-    edges.emplace_back(Vector3d(130, 0, 230), Vector3d(130, 165, 230));
-    edges.emplace_back(Vector3d(130, 165, 230), Vector3d(295, 165, 230));
-    edges.emplace_back(Vector3d(295, 0, 230), Vector3d(295, 165, 230));
-
-    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(130, 0, 230));
-    edges.emplace_back(Vector3d(130, 165, 65), Vector3d(130, 165, 230));
-    edges.emplace_back(Vector3d(295, 0, 65), Vector3d(295, 0, 230));
-    edges.emplace_back(Vector3d(295, 165, 65), Vector3d(295, 165, 230));
-
-
-    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(295, 0, 65));
-    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(130, 165, 65));
-    edges.emplace_back(Vector3d(130, 165, 65), Vector3d(295, 165, 65));
-    edges.emplace_back(Vector3d(295, 0, 65), Vector3d(295, 165, 65));
-
-
-
-    edges.emplace_back(Vector3d(265, 0, 460), Vector3d(430, 0, 460));
-    edges.emplace_back(Vector3d(265, 0, 460), Vector3d(265, 330, 460));
-    edges.emplace_back(Vector3d(265, 330, 460), Vector3d(430, 330, 460));
-    edges.emplace_back(Vector3d(430, 0, 460), Vector3d(430, 330, 460));
-
-    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(265, 0, 460));
-    edges.emplace_back(Vector3d(265, 330, 295), Vector3d(265, 330, 460));
-    edges.emplace_back(Vector3d(430, 0, 295), Vector3d(430, 0, 460));
-    edges.emplace_back(Vector3d(430, 330, 295), Vector3d(430, 330, 460));
-
-
-    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(430, 0, 295));
-    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(265, 330, 295));
-    edges.emplace_back(Vector3d(265, 330, 295), Vector3d(430, 330, 295));
-    edges.emplace_back(Vector3d(430, 0, 295), Vector3d(430, 330, 295));
-
-
-    edges.emplace_back(Vector3d(0, 0, 555), Vector3d(0, 555, 555));
-    edges.emplace_back(Vector3d(0, 0, 555), Vector3d(555, 0, 555));
-    edges.emplace_back(Vector3d(555, 555, 555), Vector3d(0, 555, 555));
-    edges.emplace_back(Vector3d(555, 555, 555), Vector3d(555, 0, 555));
-
-    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(0, 0, 555));
-    edges.emplace_back(Vector3d(0, 555, 0), Vector3d(0, 555, 555));
-    edges.emplace_back(Vector3d(555, 0, 0), Vector3d(555, 0, 555));
-    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(555, 555, 555));
-
-
-    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(0, 555, 0));
-    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(555, 0, 0));
-    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(0, 555, 0));
-    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(555, 0, 0));
-
-//    Vector3d(265 + eps, 0, 295), Vector3d(430 + eps, 330, 460)
-    vector<Vector3d> screen_dx, screen_dy, screen_dz;
-    screen_dx.resize(nx * ny);
-    screen_dy.resize(nx * ny);
-    screen_dz.resize(nx * ny);
-    int sample_num = 20000;
-    for (int i = 0; i < sample_num; i++) {
-        cout << i << endl;
-        int edge_id = rand() % edges.size();
-        auto edge = edges[edge_id];
-        auto v0 = edge.v0;
-        auto v1 = edge.v1;
-        auto t = ran();
-//        cout << t << endl;
-        auto p = v0 + t * (v1 - v0);
-        auto direct = (v1 - v0).normalized();
-        Vector3d n(-direct.y(), direct.x(), direct.z());
-//        cout << n << endl;
-        // t, u, v
-        auto pos = cam.screen_pos(p);
-//        cout << pos << endl;
-        int ti = (int) pos.x(), xi = (int) (pos.y() * nx), yi = (int) (pos.z() * ny);
-        if (ti < 0 || ti > 1 || xi < 0 || xi >= nx || yi < 0 || yi >= ny)continue;
-//        cout << p << endl;
-
-        Vector3d color_in(0, 0, 0), color_out(0, 0, 0);
-        for (int s = 0; s < ns; s++) {
-            Ray r_in = cam.get_ray(p - 1e-3f * n);
-            Ray r_out = cam.get_ray(p + 1e-3f * n);
-            color_in += color(r_in, world, 0);
-            color_out += color(r_out, world, 0);
+            int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
+            int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
+            int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
+            outputFile << ir << " " << ig << " " << ib << endl;
         }
-        color_in /= double(ns);
-        color_out /= double(ns);
-        auto pdf = 1 / (v1 - v0).norm();
-        auto weight = 1 / (pdf * (double) sample_num);
-        Vector3d dx = -n.x() * (color_in - color_out) * weight;
-        Vector3d dy = -n.y() * (color_in - color_out) * weight;
-        Vector3d dz = -n.z() * (color_in - color_out) * weight;
-//        if ((color_in - color_out).norm() > 0.011)
-//            cout << "cap" << endl;
-//        cout << "in" << endl;
-//        cout << color_in << endl;
-//        cout << "out" << endl;
-//        cout << color_in << endl;
-//        auto dy = -n.y() * (color_in - color_out) * weight;
-//        auto dz = -n.z() * (color_in - color_out) * weight;
-//        cout << yi * nx + xi << endl;
-//        cout << yi << endl;
-        screen_dx[(ny - yi - 1) * nx + xi] += dx;
-        screen_dy[(ny - yi - 1) * nx + xi] += dy;
-        screen_dz[(ny - yi - 1) * nx + xi] += dz;
-    }
-
-    outputFile.open("dx.ppm", ios::out);
-
-    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
-    for (auto c:screen_dx) {
-        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
-        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
-        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
-        outputFile << ir << " " << ig << " " << ib << endl;
     }
     outputFile.close();
-    outputFile.open("dy.ppm", ios::out);
-
-    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
-    for (auto c:screen_dy) {
-        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
-        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
-        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
-        outputFile << ir << " " << ig << " " << ib << endl;
-    }
-    outputFile.close();
-    outputFile.open("dz.ppm", ios::out);
-
-    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
-    for (auto c:screen_dz) {
-        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
-        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
-        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
-        outputFile << ir << " " << ig << " " << ib << endl;
-    }
-    outputFile.close();
+//    vector<Edge> edges;
+//    edges.emplace_back(Vector3d(130, 0, 230), Vector3d(295, 0, 230));
+//    edges.emplace_back(Vector3d(130, 0, 230), Vector3d(130, 165, 230));
+//    edges.emplace_back(Vector3d(130, 165, 230), Vector3d(295, 165, 230));
+//    edges.emplace_back(Vector3d(295, 0, 230), Vector3d(295, 165, 230));
+//
+//    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(130, 0, 230));
+//    edges.emplace_back(Vector3d(130, 165, 65), Vector3d(130, 165, 230));
+//    edges.emplace_back(Vector3d(295, 0, 65), Vector3d(295, 0, 230));
+//    edges.emplace_back(Vector3d(295, 165, 65), Vector3d(295, 165, 230));
+//
+//
+//    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(295, 0, 65));
+//    edges.emplace_back(Vector3d(130, 0, 65), Vector3d(130, 165, 65));
+//    edges.emplace_back(Vector3d(130, 165, 65), Vector3d(295, 165, 65));
+//    edges.emplace_back(Vector3d(295, 0, 65), Vector3d(295, 165, 65));
+//
+//
+//
+//    edges.emplace_back(Vector3d(265, 0, 460), Vector3d(430, 0, 460));
+//    edges.emplace_back(Vector3d(265, 0, 460), Vector3d(265, 330, 460));
+//    edges.emplace_back(Vector3d(265, 330, 460), Vector3d(430, 330, 460));
+//    edges.emplace_back(Vector3d(430, 0, 460), Vector3d(430, 330, 460));
+//
+//    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(265, 0, 460));
+//    edges.emplace_back(Vector3d(265, 330, 295), Vector3d(265, 330, 460));
+//    edges.emplace_back(Vector3d(430, 0, 295), Vector3d(430, 0, 460));
+//    edges.emplace_back(Vector3d(430, 330, 295), Vector3d(430, 330, 460));
+//
+//
+//    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(430, 0, 295));
+//    edges.emplace_back(Vector3d(265, 0, 295), Vector3d(265, 330, 295));
+//    edges.emplace_back(Vector3d(265, 330, 295), Vector3d(430, 330, 295));
+//    edges.emplace_back(Vector3d(430, 0, 295), Vector3d(430, 330, 295));
+//
+//
+//    edges.emplace_back(Vector3d(0, 0, 555), Vector3d(0, 555, 555));
+//    edges.emplace_back(Vector3d(0, 0, 555), Vector3d(555, 0, 555));
+//    edges.emplace_back(Vector3d(555, 555, 555), Vector3d(0, 555, 555));
+//    edges.emplace_back(Vector3d(555, 555, 555), Vector3d(555, 0, 555));
+//
+//    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(0, 0, 555));
+//    edges.emplace_back(Vector3d(0, 555, 0), Vector3d(0, 555, 555));
+//    edges.emplace_back(Vector3d(555, 0, 0), Vector3d(555, 0, 555));
+//    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(555, 555, 555));
+//
+//
+//    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(0, 555, 0));
+//    edges.emplace_back(Vector3d(0, 0, 0), Vector3d(555, 0, 0));
+//    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(0, 555, 0));
+//    edges.emplace_back(Vector3d(555, 555, 0), Vector3d(555, 0, 0));
+//
+////    Vector3d(265 + eps, 0, 295), Vector3d(430 + eps, 330, 460)
+//    vector<Vector3d> screen_dx, screen_dy, screen_dz;
+//    screen_dx.resize(nx * ny);
+//    screen_dy.resize(nx * ny);
+//    screen_dz.resize(nx * ny);
+//    int sample_num = 20000;
+//    for (int i = 0; i < sample_num; i++) {
+//        cout << i << endl;
+//        int edge_id = rand() % edges.size();
+//        auto edge = edges[edge_id];
+//        auto v0 = edge.v0;
+//        auto v1 = edge.v1;
+//        auto t = ran();
+////        cout << t << endl;
+//        auto p = v0 + t * (v1 - v0);
+//        auto direct = (v1 - v0).normalized();
+//        Vector3d n(-direct.y(), direct.x(), direct.z());
+////        cout << n << endl;
+//        // t, u, v
+//        auto pos = cam.screen_pos(p);
+////        cout << pos << endl;
+//        int ti = (int) pos.x(), xi = (int) (pos.y() * nx), yi = (int) (pos.z() * ny);
+//        if (ti < 0 || ti > 1 || xi < 0 || xi >= nx || yi < 0 || yi >= ny)continue;
+////        cout << p << endl;
+//
+//        Vector3d color_in(0, 0, 0), color_out(0, 0, 0);
+//        for (int s = 0; s < ns; s++) {
+//            Ray r_in = cam.get_ray(p - 1e-3f * n);
+//            Ray r_out = cam.get_ray(p + 1e-3f * n);
+//            color_in += color(r_in, world, 0);
+//            color_out += color(r_out, world, 0);
+//        }
+//        color_in /= double(ns);
+//        color_out /= double(ns);
+//        auto pdf = 1 / (v1 - v0).norm();
+//        auto weight = 1 / (pdf * (double) sample_num);
+//        Vector3d dx = -n.x() * (color_in - color_out) * weight;
+//        Vector3d dy = -n.y() * (color_in - color_out) * weight;
+//        Vector3d dz = -n.z() * (color_in - color_out) * weight;
+////        if ((color_in - color_out).norm() > 0.011)
+////            cout << "cap" << endl;
+////        cout << "in" << endl;
+////        cout << color_in << endl;
+////        cout << "out" << endl;
+////        cout << color_in << endl;
+////        auto dy = -n.y() * (color_in - color_out) * weight;
+////        auto dz = -n.z() * (color_in - color_out) * weight;
+////        cout << yi * nx + xi << endl;
+////        cout << yi << endl;
+//        screen_dx[(ny - yi - 1) * nx + xi] += dx;
+//        screen_dy[(ny - yi - 1) * nx + xi] += dy;
+//        screen_dz[(ny - yi - 1) * nx + xi] += dz;
+//    }
+//
+//    outputFile.open("dx.ppm", ios::out);
+//
+//    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
+//    for (auto c:screen_dx) {
+//        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
+//        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
+//        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
+//        outputFile << ir << " " << ig << " " << ib << endl;
+//    }
+//    outputFile.close();
+//    outputFile.open("dy.ppm", ios::out);
+//
+//    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
+//    for (auto c:screen_dy) {
+//        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
+//        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
+//        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
+//        outputFile << ir << " " << ig << " " << ib << endl;
+//    }
+//    outputFile.close();
+//    outputFile.open("dz.ppm", ios::out);
+//
+//    outputFile << "P3" << endl << nx << " " << ny << endl << 255 << endl;
+//    for (auto c:screen_dz) {
+//        int ir = int(259.99 * sqrt(clamp(c(0), 0.0, 1.0)));
+//        int ig = int(259.99 * sqrt(clamp(c(1), 0.0, 1.0)));
+//        int ib = int(259.99 * sqrt(clamp(c(2), 0.0, 1.0)));
+//        outputFile << ir << " " << ig << " " << ib << endl;
+//    }
+//    outputFile.close();
     return 0;
 }
