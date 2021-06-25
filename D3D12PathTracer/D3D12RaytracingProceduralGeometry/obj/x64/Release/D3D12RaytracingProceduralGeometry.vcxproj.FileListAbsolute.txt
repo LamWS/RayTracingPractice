@@ -1,0 +1,1 @@
+C:\Users\LamWS\Desktop\CG\DirectX-Graphics-Samples\Samples\Desktop\D3D12Raytracing\src\D3D12RaytracingProceduralGeometry\bin\x64\Release\WinPixEventRuntime.dll

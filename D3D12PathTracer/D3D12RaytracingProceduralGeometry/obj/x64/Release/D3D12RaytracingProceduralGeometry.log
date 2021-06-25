@@ -1,0 +1,15 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: 中间目录(obj\x64\Release\)包含从另一个项目(D3D12RaytracingProceduralGeometry.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  stdafx.cpp
+  D3D12RaytracingProceduralGeometry.cpp
+C:\Users\LamWS\Desktop\CG\DirectX-Graphics-Samples\Samples\Desktop\D3D12Raytracing\src\D3D12RaytracingProceduralGeometry\D3D12RaytracingProceduralGeometry.cpp(617,68): warning C4244: “参数”: 从“double”转换到“int32_t”，可能丢失数据
+C:\Users\LamWS\Desktop\CG\DirectX-Graphics-Samples\Samples\Desktop\D3D12Raytracing\src\D3D12RaytracingProceduralGeometry\D3D12RaytracingProceduralGeometry.cpp(617,60): warning C4244: “参数”: 从“double”转换到“int32_t”，可能丢失数据
+  Main.cpp
+  DeviceResources.cpp
+  DXSample.cpp
+  PerformanceTimers.cpp
+  Win32Application.cpp
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 1707 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  D3D12RaytracingProceduralGeometry.vcxproj -> C:\Users\LamWS\Desktop\CG\DirectX-Graphics-Samples\Samples\Desktop\D3D12Raytracing\src\D3D12RaytracingProceduralGeometry\bin\x64\Release\PathTracer.exe
